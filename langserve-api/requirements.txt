@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-langchain
-openai
-pydantic
-sqlalchemy
-httpx
