@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简历制作工具 - JobSense</title>
+    <link rel="stylesheet" href="./assets/font/iconfont.css">
+    <link rel="stylesheet" href="./assets/css/index.css">
+    <link rel="stylesheet" href="./assets/css/resume-maker.css">
+    <script src="./assets/js/marked.min.js"></script>
+</head>
+
+<body>
+    <!-- 修改顶部导航栏 -->
+    <header class="home-header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>JobSense</h1>
+            </div>
+            <div class="page-function">
+                简历制作
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="home.html" class="nav-link">首页</a>
+            <a href="resume-evaluation.html" class="nav-link">简历评估</a>
+            <a href="chat.html" class="nav-link">求职助手</a>
+            <a href="resume-templates.html" class="nav-link">简历模板</a>
+        </div>
+    </header>
+
+    <!-- 恢复页面标题区域 -->
+    <div class="page-title-section">
+        <div class="page-title-container">
+            <h1>简历制作</h1>
+            <p>填写信息，一键生成专业简历</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- 左侧问卷区域 -->
+        <div class="questionnaire">
+            <h2>简历信息填写</h2>
+            <form id="resume-form">
+                <!-- 基本信息 -->
+                <h3 class="section-title">基本信息</h3>
+                <div class="form-group">
+                    <label for="full-name">姓名</label>
+                    <input type="text" id="full-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="job-title">求职意向</label>
+                    <input type="text" id="job-title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">联系电话</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">电子邮箱</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">现居地</label>
+                    <input type="text" id="address">
+                </div>
+                
+                <!-- 教育背景 -->
+                <h3 class="section-title">教育背景</h3>
+                <div class="education-section">
+                    <div class="form-group">
+                        <label for="school">学校名称</label>
+                        <input type="text" id="school" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="degree">学历</label>
+                        <select id="degree" required>
+                            <option value="">请选择</option>
+                            <option value="高中">高中</option>
+                            <option value="大专">大专</option>
+                            <option value="本科">本科</option>
+                            <option value="硕士">硕士</option>
+                            <option value="博士">博士</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="major">专业</label>
+                        <input type="text" id="major" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="education-period">就读时间</label>
+                        <input type="text" id="education-period" placeholder="例如: 2015.09-2019.06" required>
+                    </div>
+                </div>
+
+                <!-- 工作经历 -->
+                <h3 class="section-title">工作经历</h3>
+                <div id="experiences-container">
+                    <div class="experience-item" data-index="0">
+                        <span class="remove-experience" onclick="removeExperience(0)">×</span>
+                        <div class="form-group">
+                            <label for="company-0">公司名称</label>
+                            <input type="text" id="company-0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="position-0">职位</label>
+                            <input type="text" id="position-0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="work-period-0">工作时间</label>
+                            <input type="text" id="work-period-0" placeholder="例如: 2019.07-2022.05">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="work-description-0">工作内容</label>
+                            <textarea id="work-description-0"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="add-experience-btn" id="add-experience">+ 添加工作经历</button>
+
+                <!-- 技能 -->
+                <h3 class="section-title">技能专长</h3>
+                <div class="form-group">
+                    <label for="skills">技能列表</label>
+                    <input type="text" id="skills" placeholder="例如: HTML, JavaScript, C++, Python">
+                </div>
+
+                <!-- 项目经验 -->
+                <h3 class="section-title">项目经验</h3>
+                <div id="projects-container">
+                    <div class="project-item" data-index="0">
+                        <span class="remove-project" onclick="removeProject(0)">×</span>
+                        <div class="form-group">
+                            <label for="project-name-0">项目名称</label>
+                            <input type="text" id="project-name-0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="project-description-0">项目描述</label>
+                            <textarea id="project-description-0"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="add-project-btn" id="add-project">+ 添加项目</button>
+
+                <!-- 生成按钮 -->
+                <button type="button" class="generate-btn" id="generate-resume">生成简历</button>
+            </form>
+        </div>
+
+        <!-- 右侧简历预览区域 -->
+        <div class="resume-preview">
+            <h2>简历预览</h2>
+            <div class="preview-placeholder">
+                <div class="preview-icon">
+                    <span class="iconfont icon-file-text"></span>
+                </div>
+                <p>填写左侧表单后，点击"生成简历"按钮预览您的简历</p>
+            </div>
+            <div id="resume-output" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- 移除页脚
+    <footer class="home-footer">
+        <p>© 2025 JobSense-您的求职小助手</p>
+    </footer>
+    -->
+    
+    <script src="./resume-maker.js"></script>
+</body>
+</html>

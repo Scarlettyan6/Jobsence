@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+    <meta charset="utf-8">
+    <title>JobSense-简历模板库</title>
+    <link rel="stylesheet" href="./assets/font/iconfont.css">
+    <link rel="stylesheet" href="./assets/css/index.css">
+    <link rel="stylesheet" href="./assets/css/resume-templates.css">
+</head>
+<body>
+    <div class="templates-container">
+        <header class="templates-header">
+            <div class="logo">
+                <h1>JobSense </h1>
+                <p>简历模板库</p>
+            </div>
+            <div class="nav-buttons">
+                <button id="btn-back">返回主页</button>
+            </div>
+        </header>
+        
+        <main class="templates-main">
+            <div class="templates-filter">
+                <div class="filter-group">
+                    <label>风格分类：</label>
+                    <select id="style-filter">
+                        <option value="all">全部</option>
+                        <option value="professional">专业商务</option>
+                        <option value="creative">创意设计</option>
+                        <option value="simple">简约风格</option>
+                        <option value="academic">学术研究</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>行业分类：</label>
+                    <select id="industry-filter">
+                        <option value="all">全部</option>
+                        <option value="it">IT/互联网</option>
+                        <option value="finance">金融/财会</option>
+                        <option value="marketing">市场/营销</option>
+                        <option value="education">教育/科研</option>
+                        <option value="medical">医疗/健康</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="templates-grid" id="templates-container">
+                <!-- 模板将通过JavaScript动态加载 -->
+            </div>
+        </main>
+        
+        <footer class="templates-footer">
+            <p>© 2025 JobSense-您的求职小助手</p>
+        </footer>
+    </div>
+    
+    <!-- 模板预览模态框 -->
+    <div id="template-preview-modal" class="modal">
+        <div class="modal-content template-preview">
+            <span class="close">&times;</span>
+            <div class="preview-container">
+                <img id="preview-image" src="" alt="简历模板预览">
+                <div class="preview-info">
+                    <h2 id="preview-title"></h2>
+                    <p id="preview-description"></p>
+                    <div class="preview-actions">
+                        <button id="btn-download">下载模板</button>
+                        <button id="btn-use">使用此模板</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="./resume-templates.js"></script>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+    <meta charset="utf-8">
+    <title>JobSense-主页</title>
+    <link rel="stylesheet" href="./assets/font/iconfont.css">
+    <link rel="stylesheet" href="./assets/css/index.css">
+    <link rel="stylesheet" href="./assets/css/home.css">
+</head>
+<body>
+    <div class="home-container">
+        <header class="home-header">
+            <div class="logo">
+                <h1>JobSense </h1>
+                <p>你的专属求职小助手</p>
+            </div>
+            <div class="auth-buttons">
+                <button id="btn-login">登录</button>
+                <button id="btn-register">注册</button>
+            </div>
+        </header>
+        
+        <main class="home-main">
+            <div class="welcome-message">
+                <h2>欢迎来到 JobSense</h2>
+                <p>我们致力于帮助您打造个性简历，提升求职竞争力，实现职业梦想</p>
+            </div>
+            
+            <div class="feature-cards">
+                <div class="feature-card" id="resume-analysis">
+                    <div class="card-icon">
+                        <span class="iconfont icon-fujian"></span>
+                    </div>
+                    <h3>简历评估匹配分析</h3>
+                    <p>AI智能分析您的简历，提供专业评估和改进建议</p>
+                </div>
+                
+                <div class="feature-card" id="resume-matching">
+                    <div class="card-icon">
+                        <span class="iconfont icon-zhedie1"></span>
+                    </div>
+                    <h3>求职交流小助手</h3>
+                    <p>面试模拟、职业交流，全面提升你的求职实力</p>
+                </div>
+                
+                <div class="feature-card" id="resume-creation">
+                    <div class="card-icon">
+                        <span class="iconfont icon-shangchuan"></span>
+                    </div>
+                    <h3>简历制作</h3>
+                    <p>使用AI辅助创建专业简历，突出您的优势</p>
+                </div>
+                
+                <div class="feature-card" id="sentiment-analysis">
+                    <div class="card-icon">
+                        <span class="iconfont icon-shuaxin"></span>
+                    </div>
+                    <h3>简历模版库</h3>
+                    <p>丰富多样的简历模版，助您轻松找到心仪款式，打造出众的个人简历</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="home-footer">
+            <p>© 2025 JobSense-您的求职小助手</p>
+        </footer>
+    </div>
+    
+    <!-- 登录模态框 -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>用户登录</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username">用户名</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">密码</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit">登录</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 注册模态框 -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>用户注册</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-username">用户名</label>
+                    <input type="text" id="register-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">密码</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">确认密码</label>
+                    <input type="password" id="register-confirm-password" required>
+                </div>
+                <button type="submit">注册</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="./home.js"></script>
+</body>
+</html>

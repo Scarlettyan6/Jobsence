@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JobSense-简历评估匹配</title>
+    <link rel="stylesheet" href="./assets/font/iconfont.css">
+    <link rel="stylesheet" href="./assets/css/index.css">
+    <script src="./assets/js/marked.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-height: 100vh; /* 限制整体高度为视口高度 */
+            overflow: hidden; /* 防止整体出现滚动条 */
+        }
+        .header {
+            background-color: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .logo p {
+            margin: 0 0 0 10px;
+            font-size: 16px;
+            color: #666;
+        }
+        .nav-buttons button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .main-content {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            overflow: hidden; /* 防止主内容区出现滚动条 */
+            max-height: calc(100vh - 130px); /* 减去头部和底部的高度 */
+        }
+        .resume-upload {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            max-height: 100%; /* 使用父容器的高度 */
+            position: relative; /* 为固定按钮做准备 */
+            padding-bottom: 70px; /* 为固定在底部的按钮留出空间 */
+        }
+        .resume-content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* 添加垂直滚动条 */
+            max-height: calc(100% - 70px); /* 减去按钮区域的高度 */
+        }
+        .resume-text {
+            width: 100%;
+            min-height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 14px;
+            resize: none;
+            flex: 1; /* 让文本框占据剩余空间 */
+            overflow-y: auto; /* 添加垂直滚动条 */
+            margin-bottom: 10px; /* 添加底部间距 */
+        }
+        .resume-file-info {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+            flex-shrink: 0; /* 防止文件信息被压缩 */
+        }
+        .ai-result {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow-y: auto; /* 添加垂直滚动条 */
+            max-height: 100%; /* 使用父容器的高度 */
+        }
+        .action-buttons {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px;
+            background-color: #fff;
+            border-top: 1px solid #eee;
+            text-align: center;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            border-radius: 0 0 8px 8px;
+            flex-shrink: 0; /* 防止按钮区域被压缩 */
+        }
+        /* 美化滚动条样式 */
+        .resume-content-area::-webkit-scrollbar,
+        .resume-text::-webkit-scrollbar,
+        .ai-result::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .resume-content-area::-webkit-scrollbar-track,
+        .resume-text::-webkit-scrollbar-track,
+        .ai-result::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .resume-content-area::-webkit-scrollbar-thumb,
+        .resume-text::-webkit-scrollbar-thumb,
+        .ai-result::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        .resume-content-area::-webkit-scrollbar-thumb:hover,
+        .resume-text::-webkit-scrollbar-thumb:hover,
+        .ai-result::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        #result-content {
+            overflow-y: auto; /* 确保内容可滚动 */
+        }
+        .section-title {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 10px; /* 减小内边距 */
+            text-align: center;
+            margin-bottom: 15px; /* 减小底部间距 */
+            cursor: pointer;
+            height: 80px; /* 固定高度 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden; /* 防止内容溢出 */
+        }
+        .upload-area:hover {
+            border-color: #3498db;
+        }
+        .upload-icon {
+            font-size: 32px; /* 减小图标大小 */
+            color: #ccc;
+            margin-bottom: 5px; /* 减小底部间距 */
+        }
+        .upload-area p {
+            margin: 0; /* 移除段落边距 */
+            font-size: 14px; /* 减小字体大小 */
+        }
+        .resume-text {
+            flex: 1;
+            width: calc(100% - 2px); /* 减去边框宽度 */
+            min-height: 200px; 
+            max-height: none; 
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 14px;
+            resize: none;
+            overflow-y: auto; 
+            box-sizing: border-box; /* 确保边框包含在宽度内 */
+        }
+        .resume-content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* 移除整体滚动效果 */
+        }
+        .section-title {
+            margin-top: 0;
+            margin-bottom: 10px; /* 减小底部间距 */
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            flex-shrink: 0; /* 防止标题被压缩 */
+        }
+        .resume-file-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .action-buttons button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .action-buttons button:hover {
+            background-color: #2980b9;
+        }
+        .result-section {
+            margin-bottom: 20px;
+        }
+        .result-section h3 {
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+        }
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #e0f2f1;
+            color: #00796b;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+    </style>
+    <style>
+        /* 在现有style标签内添加 */
+        .upload-area.highlight {
+            border-color: #3498db;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>JobSense</h1>
+                <p>简历评估匹配分析</p>
+            </div>
+            <div class="nav-buttons">
+                <button id="btn-back">返回主页</button>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <section class="resume-upload">
+                <div class="resume-content-area">
+                    <h2 class="section-title">简历文件（支持DOC、PDF）</h2>
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-icon">📄</div>
+                        <p>点击或拖拽上传简历文件</p>
+                        <input type="file" id="resume-file" style="display: none" accept=".doc,.docx,.pdf">
+                    </div>
+                    <h2 class="section-title">简历内容提取或输入</h2>
+                    <textarea id="resume-text" class="resume-text" placeholder="请粘贴您的简历内容或从文件中提取..."></textarea>
+                    <div class="resume-file-info" id="file-info"></div>
+                </div>
+                <div class="action-buttons">
+                    <button id="btn-analyze">开始分析</button>
+                </div>
+            </section>
+            
+            <section class="ai-result">
+                <h2 class="section-title">AI评估结果</h2>
+                <div id="result-content" class="result-content-scrollable">
+                    <div class="loading" id="loading" style="display: none">
+                        <p>正在分析简历，请稍候...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- 移除或注释掉footer部分 -->
+        <!-- <footer class="footer">
+            <p>© 2025 JobSense-您的求职小助手</p>
+        </footer> -->
+    </div>
+    
+    <script>
+        // 返回主页按钮事件
+        document.getElementById("btn-back").addEventListener("click", () => {
+            window.location.href = "home.html";
+        });
+        
+        // 上传区域点击事件
+        document.getElementById("upload-area").addEventListener("click", () => {
+            document.getElementById("resume-file").click();
+        });
+        
+        // 文件选择事件
+        document.getElementById("resume-file").addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById("file-info").textContent = `已选择文件: ${file.name}`;
+                
+                // 如果是PDF文件，自动提取内容
+                if (file.type === 'application/pdf') {
+                    extractPdfContent(file);
+                }
+            }
+        });
+        
+        // 提取PDF内容
+        function extractPdfContent(file) {
+            const formData = new FormData();
+            formData.append('resume', file);
+            
+            // 显示加载状态
+            document.getElementById("file-info").textContent = `正在提取 ${file.name} 的内容...`;
+            
+            fetch('/api/extract-pdf', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 将提取的文本填充到文本区域
+                    document.getElementById("resume-text").value = data.text;
+                    document.getElementById("file-info").textContent = `已成功提取 ${file.name} 的内容`;
+                } else {
+                    document.getElementById("file-info").textContent = `提取失败: ${data.message}`;
+                }
+            })
+            .catch(error => {
+                console.error('提取PDF内容失败:', error);
+                document.getElementById("file-info").textContent = '提取PDF内容失败，请重试或手动输入';
+            });
+        }
+        
+        // 分析按钮点击事件
+        document.getElementById("btn-analyze").addEventListener("click", () => {
+            const resumeText = document.getElementById("resume-text").value.trim();
+            
+            if (!resumeText) {
+                alert("请输入简历内容或上传简历文件");
+                return;
+            }
+            
+            // 显示加载状态
+            const loading = document.getElementById("loading");
+            loading.style.display = "block";
+            
+            const resultContent = document.getElementById("result-content");
+            resultContent.innerHTML = '<div class="loading" id="loading"><p>正在分析简历，请稍候...</p></div>';
+            
+            // 调用后端API进行分析
+            analyzeResume(resumeText);
+        });
+     
+        
+// 拖放功能
+const uploadArea = document.getElementById("upload-area");
+
+// 阻止默认拖放行为
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+// 高亮显示拖放区域
+['dragenter', 'dragover'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight() {
+    uploadArea.classList.add('highlight');
+}
+
+function unhighlight() {
+    uploadArea.classList.remove('highlight');
+}
+
+// 处理拖放文件
+uploadArea.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const file = dt.files[0];
+    
+    if (file) {
+        document.getElementById("file-info").textContent = `已选择文件: ${file.name}`;
+        
+        // 如果是PDF文件，自动提取内容
+        if (file.type === 'application/pdf') {
+            extractPdfContent(file);
+        }
+    }
+}
+
+        // 简历分析函数
+        function analyzeResume(resumeText) {
+            const data = {
+                content: resumeText
+            };
+            
+            fetch('http://127.0.0.1:8000/api/chat_resume', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder("utf-8");
+                    const resultContent = document.getElementById("result-content");
+                    resultContent.innerHTML = '';
+                    
+                    let finalAnswer = "";
+                    
+                    function read() {
+                        reader.read().then(({ done, value }) => {
+                            if (done) {
+                                console.log('Stream closed');
+                                
+                                // 处理最终结果，格式化显示
+                                formatResult(finalAnswer);
+                                return;
+                            }
+                            
+                            const chunk = decoder.decode(value, { stream: true });
+                            chunk.split('\r\n').forEach(eventString => {
+                                console.log("流式返回响应:", eventString);
+                                finalAnswer += eventString;
+                            });
+                            
+                            // 实时更新结果
+                            resultContent.innerHTML = marked.parse(finalAnswer);
+                            read();
+                        }).catch(error => {
+                            console.error('Stream error', error);
+                            resultContent.innerHTML = '<p>分析过程中出现错误，请重试</p>';
+                        });
+                    }
+                    
+                    read();
+                } else {
+                    console.error('Network response was not ok.');
+                    document.getElementById("result-content").innerHTML = '<p>网络请求失败，请检查后端服务是否正常运行</p>';
+                }
+            }).catch(error => {
+                console.error('Fetch error:', error);
+                document.getElementById("result-content").innerHTML = '<p>网络请求失败，请检查后端服务是否正常运行</p>';
+            });
+        }
+        
+        // 格式化结果显示
+        function formatResult(result) {
+            // 这里可以根据返回的结果格式进行自定义处理
+            // 目前使用marked直接渲染markdown格式
+            const resultContent = document.getElementById("result-content");
+            resultContent.innerHTML = marked.parse(result);
+        }
+    </script>
+</body>
+</html>
+
